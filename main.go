@@ -80,7 +80,9 @@ func main() {
 		profilePrefix = ""
 	}
 
-	err = updateAWSConfig(accounts, token.StartURL, region, profilePrefix)
+	configPath := filepath.Join(os.Getenv("HOME"), ".aws", "config")
+
+	err = updateAWSConfig(configPath, accounts, token.StartURL, region, profilePrefix)
 	if err != nil {
 		fmt.Println(danger("Error updating AWS config:"), err)
 		os.Exit(1)
@@ -211,8 +213,7 @@ func validateRoleForAccount(client *sso.Client, accessToken, accountID string) (
 	return false, nil
 }
 
-func updateAWSConfig(accounts []types.AccountInfo, startURL, region string, profilePrefix string) error {
-	configPath := filepath.Join(os.Getenv("HOME"), ".aws", "config")
+func updateAWSConfig(configPath string, accounts []types.AccountInfo, startURL, region string, profilePrefix string) error {
 	cfg, err := ini.Load(configPath)
 	if err != nil {
 		return fmt.Errorf(danger("Failed to load AWS config file: %w"), err)
@@ -256,15 +257,15 @@ func updateAWSConfig(accounts []types.AccountInfo, startURL, region string, prof
 			continue
 		}
 
-		fmt.Printf(info("Running without dry run would add or update the following profile\n"))
-		fmt.Printf("[profile %s]\n", profileName)
-		fmt.Printf("sso_start_url = %s\n", startURL)
-		fmt.Printf("sso_region = %s\n", region)
-		fmt.Printf("sso_account_id = %s\n", *account.AccountId)
-		fmt.Printf("sso_role_name = %s\n", opts.RoleName)
-		fmt.Printf("region = %s\n\n", region)
-
 		if opts.DryRun {
+			fmt.Printf("%s\n", info("Running without dry run would add or update the following profile"))
+			fmt.Printf("[profile %s]\n", profileName)
+			fmt.Printf("sso_start_url = %s\n", startURL)
+			fmt.Printf("sso_region = %s\n", region)
+			fmt.Printf("sso_account_id = %s\n", *account.AccountId)
+			fmt.Printf("sso_role_name = %s\n", opts.RoleName)
+			fmt.Printf("region = %s\n\n", region)
+
 			continue
 		}
 
