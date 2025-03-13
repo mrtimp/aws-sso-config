@@ -1,4 +1,4 @@
-name: Release Go Project
+name: Release
 
 on:
   push:
@@ -6,16 +6,11 @@ on:
       - "*"
 
 jobs:
-  build:
-    name: GoReleaser build
+  goreleaser:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
           go-version-file: 'go.mod'
 

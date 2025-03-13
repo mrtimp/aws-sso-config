@@ -1,0 +1,18 @@
+version: 2
+
+builds:
+  - goos:
+    - linux
+    - darwin
+    - windows
+
+brews:
+  - repository:
+      owner: mrtimp
+      name: homebrew-formulas
+    directory: Formula
+    homepage: "https://github.com/mrtimp/aws-sso-config"
+    description: "Automatically generate AWS profiles for accounts and roles you have access to via SSO/IAM Identity Center"
+    commit_author:
+      name: mrtimp
+      email: timp@unfuddle.nz
